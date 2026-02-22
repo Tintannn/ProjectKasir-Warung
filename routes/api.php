@@ -1,8 +1,16 @@
 <?php
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BarangController;
+use App\Http\Controllers\TransaksiController;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
+Route::post('/users/register',[AuthController::class,'register']);
+Route::post('/users/login',[AuthController::class,'login']);
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
+Route::middleware('auth:sanctum')->group(function(){
+
+Route::post('/users/logout',[AuthController::class,'logout']);
+
+Route::apiResource('barang',BarangController::class);
+Route::apiResource('transaksi',TransaksiController::class);
+Route::apiResource('detail-transaksi', DetailTransaksiController::class);
+});
