@@ -1,7 +1,8 @@
 <?php
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\BarangController;
-use App\Http\Controllers\TransaksiController;
+use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\BarangController;
+use App\Http\Controllers\Api\TransaksiController;
+use App\Http\Controllers\Api\DetailTransaksiController;
 
 Route::post('/users/register',[AuthController::class,'register']);
 Route::post('/users/login',[AuthController::class,'login']);

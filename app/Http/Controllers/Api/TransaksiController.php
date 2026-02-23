@@ -3,9 +3,13 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Transaksi;
+use App\Models\Barang;
+use App\Models\DetailTransaksi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Resources\ApiResource;
+
 
 class TransaksiController extends Controller
 {
@@ -77,16 +81,38 @@ class TransaksiController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
-    {
-        //
+    public function update(Request $request, $id)
+{
+    $transaksi = Transaksi::findOrFail($id);
+
+    $validator = Validator::make($request->all(),[
+        'bayar'=>'required|numeric|min:0'
+    ]);
+
+    if($validator->fails()){
+        return new ApiResource(false,'Validasi gagal',$validator->errors());
     }
+
+    $kembali = $request->bayar - $transaksi->total_harga;
+
+    $transaksi->update([
+        'bayar'=>$request->bayar,
+        'kembali'=>$kembali
+    ]);
+
+    return new ApiResource(true,'Transaksi berhasil diupdate',
+        $transaksi->load('detail.barang','user')
+    );
+}
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
-    {
-        //
-    }
+    public function destroy($id)
+{
+    $transaksi = Transaksi::findOrFail($id);
+    $transaksi->delete();
+
+    return new ApiResource(true,'Transaksi berhasil dihapus',null);
+}
 }
