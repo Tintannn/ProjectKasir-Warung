@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\DetailTransaksi;
 use App\Models\Barang;
+use App\Models\Log;
 use App\Http\Resources\ApiResource;
 
 class DetailTransaksiController extends Controller
@@ -45,6 +46,14 @@ class DetailTransaksiController extends Controller
         'barang_id'=>$request->barang_id,
         'jumlahBarang'=>$request->jumlahBarang,
         'subtotal'=>$subtotal
+    ]);
+
+     Log::create([
+        'user_id' => auth()->id(),
+        'aksi' => 'Tambah Barang',
+        'tabel' => 'barangs',
+        'ip_address' => request()->ip(),
+        'created_at' => now()
     ]);
 
     return new ApiResource(true,'Detail transaksi berhasil ditambahkan',

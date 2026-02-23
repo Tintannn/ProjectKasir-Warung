@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Log;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Resources\ApiResource;
@@ -29,6 +30,7 @@ class BarangController extends Controller
         'nama_menu'=>'required|string',
         'harga'=>'required|numeric',
         'satuan'=>'required|string'
+        
     ]);
 
     if($validator->fails()){
@@ -37,7 +39,17 @@ class BarangController extends Controller
 
     $barang = Barang::create($request->all());
 
+     Log::create([
+        'user_id' => auth()->id(),
+        'aksi' => 'Tambah Barang',
+        'tabel' => 'barangs',
+        'ip_address' => request()->ip(),
+        'created_at' => now()
+    ]);
+    
     return new ApiResource(true,'Barang berhasil ditambahkan',$barang);
+
+    
 }
 
 

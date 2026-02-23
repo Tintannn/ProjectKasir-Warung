@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Transaksi;
 use App\Models\Barang;
+use App\Models\Log;
 use App\Models\DetailTransaksi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -66,6 +67,14 @@ class TransaksiController extends Controller
         'kembali'=>$request->bayar - $total
     ]);
 
+     Log::create([
+        'user_id' => auth()->id(),
+        'aksi' => 'Tambah Barang',
+        'tabel' => 'barangs',
+        'ip_address' => request()->ip(),
+        'created_at' => now()
+    ]);
+
     return new ApiResource(true,'Transaksi berhasil',$transaksi->load('detail.barang','user'));
 }
 
@@ -113,6 +122,14 @@ class TransaksiController extends Controller
     $transaksi = Transaksi::findOrFail($id);
     $transaksi->delete();
 
+     Log::create([
+        'user_id' => auth()->id(),
+        'aksi' => 'Tambah Barang',
+        'tabel' => 'barangs',
+        'ip_address' => request()->ip(),
+        'created_at' => now()
+    ]);
+    
     return new ApiResource(true,'Transaksi berhasil dihapus',null);
 }
 }
